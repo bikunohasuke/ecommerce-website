@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+	<title>Main</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1" />
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+	<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+	<script type="text/javascript">
+		var user = '{{request.user}}'
+
+		function getToken(name) {
+		    var cookieValue = null;
+		    if (document.cookie && document.cookie !== '') {
+		        var cookies = document.cookie.split(';');
+		        for (var i = 0; i < cookies.length; i++) {
+		            var cookie = cookies[i].trim();
+		            // Does this cookie string begin with the name we want?
+		            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+		                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+		                break;
+		            }
+		        }
+		    }
+		    return cookieValue;
+		}
+		var csrftoken = getToken('csrftoken')
+	</script>
+	<style>body{
+	    font-family: 'Roboto Condensed', sans-serif;
+	    background-color: #f5f5f5
+	}
+	.hedding{
+		font-size: 20px;
+		color:#ab8181`;
+	}
+	.main-section{
+		position: absolute;
+		left:50%;
+		right:50%;
+		transform: translate(-50%,5%);
+	}
+	.left-side-product-box img{
+		width: 100%;
+	}
+	.left-side-product-box .sub-img img{
+		margin-top:5px;
+		width:83px;
+		height:100px;
+	}
+	.right-side-pro-detail span{
+		font-size:15px;
+	}
+	.right-side-pro-detail p{
+		font-size:25px;
+		color:#a1a1a1;
+	}
+	.right-side-pro-detail .price-pro{
+		color:#E45641;
+	}
+	.right-side-pro-detail .tag-section{
+		font-size:18px;
+		color:#5D4C46;
+	}
+	.pro-box-section .pro-box img{
+		width: 100%;
+		height:200px;
+	}
+	@media (min-width:360px) and (max-width:640px) {
+		.pro-box-section .pro-box img{
+			height:auto;
+		}
+	}</style>
+</head>
+<body>
+
+	<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+	  <a class="navbar-brand" href="{% url 'store' %}">Main</a>
+	  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+	    <span class="navbar-toggler-icon"></span>
+	  </button>
+
+	  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+	    <ul class="navbar-nav mr-auto">
+	      <li class="nav-item active">
+	        <a class="nav-link" href="{% url 'store' %}">Store <span class="sr-only">(current)</span></a>
+	      </li>
+	      <li class="nav-item dropdown">
+	        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+	          Category
+	        </a>
+	        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+	        	{% for cate in categories %}
+	          <a class="dropdown-item" href="/?cat={{cate.id}}">{{cate.Name}}</a>
+	          {% endfor %}
+	        </div>
+	      </li>
+	    </ul>
+	    <div class="form-inline my-2 my-lg-0">
+	     	<a id="ButtonLogin" onclick="$('#loginModal').modal('show');" class="btn btn-warning">Login</a>
+	     	
+	     	<a href="{% url 'cart' %}">
+	    		<img  id="cart-icon" src="{% static 'images/cart.png' %}">
+	    	</a>
+	    	<p id="cart-total">{{cartItems}}</p>
+
+	    </div>
+	  </div>
+	</nav>
+
+     <div class="container">
+            <br>
+            {% block content %}
+
+
+            {% endblock content %}
+         </div>
+<div class="modal fade hide" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header border-bottom-0">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-title text-center">
+          <h4>Login</h4>
+        </div>
+        <div class="d-flex flex-column text-center">
+          <form method="POST" action="{% url 'login' %}">
+            <div class="form-group">
+              <input type="username" class="form-control" name="username" placeholder="Your username...">
+            </div>
+            <div class="form-group">
+              <input type="password" class="form-control" name="password" placeholder="Your password...">
+            </div>
+            {% csrf_token %}
+            <button type="submit" class="btn btn-info btn-block btn-round">Login</button>
+          </form>
+        </div>
+    </div>
+      <div class="modal-footer d-flex justify-content-center">
+        <div class="signup-section">Not a member yet? <a onclick="$('#signupModal').modal('show');" class="text-info"> Sign Up</a>.</div>
+      </div>
+  </div>
+</div>
+<div class="modal fade hide" id="signupModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header border-bottom-0">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-title text-center">
+          <h4>Sign up</h4>
+        </div>
+        <div class="d-flex flex-column text-center">
+          <form method="POST" action="{% url 'signup' %}">
+            <div class="form-group">
+              <input type="username" class="form-control" name="username"placeholder="Your username...">
+            </div>
+            <div class="form-group">
+              <input type="password" class="form-control" name="password" placeholder="Your password...">
+            </div>
+            {% csrf_token %}
+            <button type="submit" class="btn btn-info btn-block btn-round">Sign up</button>
+          </form>
+        </div>
+    </div>
+      <div class="modal-footer d-flex justify-content-center">
+        <div class="signup-section"><a onclick="$('#signupModal').modal('hide');$('#loginModal').modal('show');" class="text-info">Login</a>.</div>
+      </div>
+  </div>
+</div>
+
+	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+	<script type="text/javascript" src="{% static 'js/cart.js' %}"></script>
+	<script type="text/javascript">
+				logged = "{{request.user.is_authenticated}}";
+				if (logged == "True"){
+					$('#ButtonLogin').text("Hello {{request.user.username}}! Logout?")
+					$("#ButtonLogin").attr("onclick","logout()");
+				}
+				function logout(){
+					location.href="{% url 'logout' %}"
+				}
+	</script>
+	</script>
+</body>
+</html>
